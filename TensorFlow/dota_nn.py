@@ -54,21 +54,22 @@ def main():
 	x_t = tf.reshape(x, [batch_size, 240])
 
 	y = tf.placeholder(tf.float32)
-	y_t = tf.reshape(y, [batch_size, 1]) #important that model dimensions matches label dimensions
+	y_t = tf.reshape(y, [batch_size, 2]) #important that model dimensions matches label dimensions
 
 
 	W_1 = weight_variable([240, 500])
-	W_2 = weight_variable([500, 1])
+	W_2 = weight_variable([500, 2])
 	W_3 = weight_variable([500, 500])
 	b_1 = bias_variable([500])
-	b_2 = bias_variable([1])
+	b_2 = bias_variable([2])
 	b_3 = bias_variable([500])
 	layer1 = tf.nn.relu(tf.matmul(x_t, W_1) + b_1)
 	layer1_5 = tf.nn.relu(tf.matmul(layer1, W_3) + b_3)
 	layer2 = (tf.matmul(layer1_5, W_2) + b_2)
 	model_out = layer2 #tf.reshape(layer2, [2, 6])
 	#model_out = tf.Print(model_out, [model_out.shape], message="model shape is: ")
-	loss = tf.reduce_mean(model_out - y_t)
+	one_hot = tf.one_hot(indices=tf.cast(y_t, tf.int32), depth=2)
+	loss = tf.reduce_mean(tf.losses.softmax_cross_entropy(onehot_labels=one_hot, logits=model_out))
 
 	optimizer = tf.train.AdamOptimizer(0.2)
 	train = optimizer.minimize(loss)
