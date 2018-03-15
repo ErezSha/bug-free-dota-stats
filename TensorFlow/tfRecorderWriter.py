@@ -28,29 +28,13 @@ class Examle:
             self.picks[0,heroIdx + nFeatures] = 1.0
         self.label[0,0] = GameData["radiantWin"]
 
-
-
-
-
-
-
-
-
-def test():
-    file = open("../data/sampleGame.json")
-    data = json.load(file)
-
-    for key in data.keys():
-        hero1 = data[key]["radiant"]["radiantHeroPick1"]
-    return
-
 def main():
 
     #filename = sys.argv[1]
     #outname = sys.argv[2]
     outname = "ico.tfrecord"
     #file = open(filename, "r")
-    file = open("../data/sampleGame.json")
+    file = open("../data/parsedGames.json")
     data = json.load(file)
     examples = []
     for key in data.keys():
