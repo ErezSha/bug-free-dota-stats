@@ -27,8 +27,10 @@ function getSeq (data, heroId) {
 }
 
 function parseGame (game) {
-  const { match_id, draft_timings, leagueid, picks_bans, dire_team,
-    radiant_team, players, radiant_win } = game
+  const { match_id, draft_timings, leagueid, picks_bans, dire_team = {team_id: -1},
+    radiant_team = {team_id: -1}, players, radiant_win } = game
+
+  if (!draft_timings || !picks_bans || !players || radiant_win === undefined || radiant_win === null) return undefined
 
   const pickBanObj = {} // hero id to active team
   picks_bans.forEach(pb => {
