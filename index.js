@@ -48,7 +48,7 @@ async function parseGames () {
         continue
       }
 
-      const fetchedGame = await getGame(gameId)
+      const fetchedGame = await getGame(gameId);
       let parsedGame
       try {
         parsedGame = parseGame(fetchedGame)
