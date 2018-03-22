@@ -77,13 +77,11 @@ function parseGame (game) {
       radiantBan3: radiantBans[2].heroId,
       radiantBan4: radiantBans[3].heroId,
       radiantBan5: radiantBans[4].heroId,
-      radiantBan6: radiantBans[5].heroId,
       radiantBan1TotalTime: radiantBans[0].ttt,
       radiantBan2TotalTime: radiantBans[1].ttt,
       radiantBan3TotalTime: radiantBans[2].ttt,
       radiantBan4TotalTime: radiantBans[3].ttt,
       radiantBan5TotalTime: radiantBans[4].ttt,
-      radiantBan6TotalTime: radiantBans[5].ttt,
       radiantHeroPick1: radiantPicks[0].heroId,
       radiantHeroPick2: radiantPicks[1].heroId,
       radiantHeroPick3: radiantPicks[2].heroId,
@@ -106,13 +104,11 @@ function parseGame (game) {
       direBan3: direBans[2].heroId,
       direBan4: direBans[3].heroId,
       direBan5: direBans[4].heroId,
-      direBan6: direBans[5].heroId,
       direBan1TotalTime: direBans[0].ttt,
       direBan2TotalTime: direBans[1].ttt,
       direBan3TotalTime: direBans[2].ttt,
       direBan4TotalTime: direBans[3].ttt,
       direBan5TotalTime: direBans[4].ttt,
-      direBan6TotalTime: direBans[5].ttt,
       direHeroPick1: direPicks[0].heroId,
       direHeroPick2: direPicks[1].heroId,
       direHeroPick3: direPicks[2].heroId,
@@ -129,6 +125,15 @@ function parseGame (game) {
       direHeroPick4Player: players[direPicks[3].playerSlot].account_id,
       direHeroPick5Player: players[direPicks[4].playerSlot].account_id
     }
+  }
+
+  if (radiantBans[5]) {
+    data.radiant.radiantBan6 = radiantBans[5].heroId
+    data.radiant.radiantBan6TotalTime = radiantBans[5].ttt
+  }
+  if (direBans[5]) {
+    data.dire.direBan6 = direBans[5].heroId
+    data.dire.direBan6TotalTime = direBans[5].ttt
   }
 
   const radiantFirstSecondPositionPlayers = getFirstAndSecondPositionPlayers(radiantPlayers)

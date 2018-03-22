@@ -19,7 +19,7 @@ getGame(3779051877)
 async function getMatchesToParse () {
   const games = {}
   let lowestGameId
-  while (Object.keys(games).length < 5000) {
+  while (Object.keys(games).length < 7000) {
     const proMatches = await getProMatches(lowestGameId)
     proMatches.forEach((pm) => {
       const { match_id, start_time, radiant_win } = pm
@@ -33,7 +33,10 @@ async function getMatchesToParse () {
 async function parseGames () {
   const gameData = fs.readFileSync('./data/games.json')
   const games = JSON.parse(gameData)
-  const gameIds = Object.keys(games).reverse()
+  const gameIds = []
+  for (let gameId in games) {
+    if (!games[gameId].didFetch) gameIds.unshift(gameId)
+  }
   const parsedGames = {}
 
   try {
@@ -50,7 +53,7 @@ async function parseGames () {
       try {
         parsedGame = parseGame(fetchedGame)
       } catch (err) {
-        console.log(`skipping game ${gameId}`)
+        console.log(`skipping game ${gameId} because: ${err}`)
       }
 
       if (parsedGame) {
@@ -58,7 +61,7 @@ async function parseGames () {
         games[gameId].didFetch = true
         console.log(`done with game ${gameId}`)
       } else {
-        console.log(`skipping game ${gameId}`)
+        console.log(`skipping game ${gameId} because of missing information`)
       }
     }
   } finally {
