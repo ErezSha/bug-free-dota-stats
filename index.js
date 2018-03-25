@@ -38,7 +38,7 @@ async function parseGames () {
     if (!games[gameId].didFetch) gameIds.unshift(gameId)
   }
   const parsedGames = {}
-
+  console.log(`trying to fetch ${gameIds.length} games`)
   try {
     for (let gameIndex = 0; gameIndex < gameIds.length; gameIndex++) {
       const gameId = gameIds[gameIndex]
@@ -48,7 +48,7 @@ async function parseGames () {
         continue
       }
 
-      const fetchedGame = await getGame(gameId);
+      const fetchedGame = await getGame(gameId)
       let parsedGame
       try {
         parsedGame = parseGame(fetchedGame)

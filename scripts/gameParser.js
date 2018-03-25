@@ -26,16 +26,25 @@ function getSeq (data, heroId) {
   if (heroId === radiantHeroPick5 || heroId === direHeroPick5) return 5
 }
 
+function getTotalTimeTaken (draftTimings, hero_id) {
+  if (!draftTimings) return -1
+  return draftTimings.filter(dt => dt.hero_id === hero_id)[0].total_time_taken
+}
+
+function getPlayer (players, hero_id, isPick) {
+  if (!isPick) return { playerSlot: -1, account_id: -1 }
+  const player = players.filter(player => player.hero_id === hero_id)[0]
+  return {
+    playerSlot: player.player_slot,
+    accountId: player.account_id
+  }
+}
+
 function parseGame (game) {
   const { match_id, draft_timings, leagueid, picks_bans, dire_team = {team_id: -1},
     radiant_team = {team_id: -1}, players, radiant_win } = game
 
-  if (!draft_timings || !picks_bans || !players || radiant_win === undefined || radiant_win === null) return undefined
-
-  const pickBanObj = {} // hero id to active team
-  picks_bans.forEach(pb => {
-    pickBanObj[pb.hero_id] = pb.team
-  })
+  if (!picks_bans || !players || radiant_win === undefined || radiant_win === null) return undefined
 
   const radiantWin = radiant_win ? 1 : 0
   const radiantBans = []
@@ -43,16 +52,16 @@ function parseGame (game) {
   const direBans = []
   const direPicks = []
 
-  draft_timings.forEach((pb) => {
+  picks_bans.forEach((pb) => {
     const pickBan = pb
-    const { pick, hero_id, player_slot, total_time_taken } = pickBan
-    const pickObj = {heroId: hero_id, playerSlot: player_slot, ttt: total_time_taken}
-    const activeTeam = pickBanObj[hero_id]
+    const { is_pick, hero_id, team } = pickBan
+    let pickObj = {heroId: hero_id, ttt: getTotalTimeTaken(draft_timings, hero_id)}
+    pickObj = Object.assign(pickObj, getPlayer(players, hero_id, is_pick))
 
-    if (pick && activeTeam === 0) radiantPicks.push(pickObj)
-    if (!pick && activeTeam === 0) radiantBans.push(pickObj)
-    if (pick && activeTeam === 1) direPicks.push(pickObj)
-    if (!pick && activeTeam === 1) direBans.push(pickObj)
+    if (is_pick && team === 0) radiantPicks.push(pickObj)
+    if (!is_pick && team === 0) radiantBans.push(pickObj)
+    if (is_pick && team === 1) direPicks.push(pickObj)
+    if (!is_pick && team === 1) direBans.push(pickObj)
   })
 
   const radiantPlayers = []
@@ -92,11 +101,11 @@ function parseGame (game) {
       radiantHeroPick3TotalTime: radiantPicks[2].ttt,
       radiantHeroPick4TotalTime: radiantPicks[3].ttt,
       radiantHeroPick5TotalTime: radiantPicks[4].ttt,
-      radiantHeroPick1Player: players[radiantPicks[0].playerSlot].account_id,
-      radiantHeroPick2Player: players[radiantPicks[1].playerSlot].account_id,
-      radiantHeroPick3Player: players[radiantPicks[2].playerSlot].account_id,
-      radiantHeroPick4Player: players[radiantPicks[3].playerSlot].account_id,
-      radiantHeroPick5Player: players[radiantPicks[4].playerSlot].account_id
+      radiantHeroPick1Player: radiantPicks[0].accountId,
+      radiantHeroPick2Player: radiantPicks[1].accountId,
+      radiantHeroPick3Player: radiantPicks[2].accountId,
+      radiantHeroPick4Player: radiantPicks[3].accountId,
+      radiantHeroPick5Player: radiantPicks[4].accountId
     },
     dire: {
       direBan1: direBans[0].heroId,
@@ -119,11 +128,11 @@ function parseGame (game) {
       direHeroPick3TotalTime: direPicks[2].ttt,
       direHeroPick4TotalTime: direPicks[3].ttt,
       direHeroPick5TotalTime: direPicks[4].ttt,
-      direHeroPick1Player: players[direPicks[0].playerSlot].account_id,
-      direHeroPick2Player: players[direPicks[1].playerSlot].account_id,
-      direHeroPick3Player: players[direPicks[2].playerSlot].account_id,
-      direHeroPick4Player: players[direPicks[3].playerSlot].account_id,
-      direHeroPick5Player: players[direPicks[4].playerSlot].account_id
+      direHeroPick1Player: direPicks[0].accountId,
+      direHeroPick2Player: direPicks[1].accountId,
+      direHeroPick3Player: direPicks[2].accountId,
+      direHeroPick4Player: direPicks[3].accountId,
+      direHeroPick5Player: direPicks[4].accountId
     }
   }
 
