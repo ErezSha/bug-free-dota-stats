@@ -28,13 +28,13 @@ class Examle:
             self.picks[0,heroIdx + nFeatures] = 1.0
         self.label[0,0] = GameData["radiantWin"]
 
-def main():
+def main(outname, inname):
 
     #filename = sys.argv[1]
     #outname = sys.argv[2]
-    outname = "ico.tfrecord"
+
     #file = open(filename, "r")
-    file = open("../data/parsedGames.json")
+    file = open(inname)
     data = json.load(file)
     examples = []
     for key in data.keys():
@@ -56,4 +56,4 @@ def main():
         writer.write(example.SerializeToString())
     writer.close()
 
-main()
+main(sys.argv[2], sys.argv[1])
