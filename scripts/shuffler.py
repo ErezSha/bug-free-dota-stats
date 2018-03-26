@@ -3,13 +3,11 @@ import sys
 import json
 import argparse
 
-gameDataFile = 'parsedGames.json'
-
 def getGameData(fileName):
     getDataFrom = './data/'+fileName
     return json.load(open(getDataFrom))
 
-def writeDataToFile(fileName, data, pretty):
+def writeDataToFile(fileName, data, pretty=False):
     writeTo = './data/'+fileName
     with open(writeTo, 'w+') as outfile:
         if pretty:
