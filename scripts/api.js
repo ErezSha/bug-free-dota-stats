@@ -42,6 +42,11 @@ async function getProMatches (lessThanGameId) {
   })
 }
 
+async function getHeroes () {
+  let url = `https://api.opendota.com/api/heroes`
+  return callApi(url).then((heroes) => heroes)
+}
+
 module.exports = {
-  getGame, getPlayer, getPlayerHeroStats, getProMatches
+  getGame, getPlayer, getPlayerHeroStats, getProMatches, getHeroes
 }

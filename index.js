@@ -1,5 +1,5 @@
 /* eslint camelcase: 0 */
-const { getGame, getProMatches } = require('./scripts/api')
+const { getGame, getProMatches, getHeroes } = require('./scripts/api')
 const { parseGame } = require('./scripts/gameParser')
 const fs = require('fs')
 const moment = require('moment')
@@ -78,5 +78,13 @@ async function parseGames () {
   }
 }
 
+async function getHeroesList () {
+  const heroes = await getHeroes()
+  const heroesToWrite = {}
+  heroes.forEach(hero => { heroesToWrite[hero.id] = hero })
+  fs.writeFileSync('./data/heroes.json', JSON.stringify(heroesToWrite))
+}
+
 // getMatchesToParse()
-parseGames()
+// parseGames()
+getHeroesList()
