@@ -1,8 +1,9 @@
+from __future__ import division
 import sys
 import time
-from shuffler import getGameData, writeDataToFile
+import argparse
+from shuffler import getGameData, writeDataToFile, parser
 
-getDataFrom = 'parsedGames.json'
 heroesStats = {2: {}, 3: {}, 4: {}, 5: {}}
 
 def getHeroPicks(gameData, side='radiant'):
@@ -24,7 +25,7 @@ def addToHeroesStats(setOfHeroSets, didWin):
         ph = heroesStats[len(heroSet)]
         # initialize if not in object
         if setAsStr not in ph.keys():
-            ph[setAsStr] = { 'picked': 0, 'win': 0, 'lose': 0 }
+            ph[setAsStr] = { 'id': setAsStr, 'picked': 0, 'win': 0, 'lose': 0 }
             
         ph[setAsStr]['picked'] += 1
         if didWin:
@@ -48,12 +49,56 @@ def getGameHeroData(game):
     end = time.time()
     print(end - start)
 
-def main():
-    games = getGameData(getDataFrom)
+def heroDataFromGames(fileName='parsedGames.json'):
+    games = getGameData(fileName)
     
     for game in games.values():
         getGameHeroData(game)
     
     writeDataToFile('heroStats.json', heroesStats, False)
+    print('done wrting to file')
 
-main()
+# gets an array of hero ids.
+# returns an array of localized hero names.
+def resolveHeroIdsToNames(heroIds):
+    heroes = getGameData('heroes.json')
+    return map(lambda heroId: heroes[heroId]['localized_name'], heroIds)
+
+def getMost(games, what='picked', ofType='2', minGames = 0):
+    heroStats = filter(lambda stat: stat['picked'] >= minGames ,games[ofType].values())
+    sortedStats = []
+    if what == 'w/l':
+        sortedStats = sorted(heroStats, key=lambda stat: stat['win']/stat['picked'], reverse=True)
+    else:
+        sortedStats = sorted(heroStats, key=lambda stat: stat[what], reverse=True)
+
+    return sortedStats
+
+def prepareForPrint(heroesStats):
+    heroIds = heroesStats['id'].split('_')
+    heroNames = resolveHeroIdsToNames(heroIds)
+    return [' & '.join(heroNames), str(heroesStats['picked']), str(heroesStats['win']), str(heroesStats['lose'])]
+
+def countType(games, ofType='2', minGames=0):
+    heroStats = filter(lambda stat: stat['picked'] > minGames ,games[ofType].values())
+    return heroesStats.keys()
+
+def main(args):
+    games = getGameData('heroStats.json') 
+    if args.most != None:
+        most = getMost(games, what=args.most, ofType=args.ofType, minGames=args.minGames)
+        totalOfType = len(most)
+        statsToPrint = map(prepareForPrint, most[0:args.top])
+        
+        headers = ["Heroes", "Picked", "Win", "Lose"]
+        print "\t".join(headers)
+        for index, stats in enumerate(statsToPrint):
+            print("{}. {}".format(str(index+1), " ".join(stats)))
+        print("\nTotal: {} ".format(str(totalOfType)))
+
+
+parser = argparse.ArgumentParser(description='Get some cool stats for hero combinations', add_help=False)
+parser.add_argument('--most', dest='most', help='Choose from w/l, picked, win, lose')
+parser.add_argument('-ofType', dest='ofType', help='Choose from 2,3,4,5', type=str, default='2')
+parser.add_argument('-top', dest='top', help='how many rows to show', type=int, default=3)
+parser.add_argument('-minGames', dest='minGames', help='minimum games to consider', type=int, default=0)
