@@ -2,7 +2,7 @@ from __future__ import division
 import sys
 import time
 import argparse
-from shuffler import getGameData, writeDataToFile, parser
+from shuffler import getGameData, writeDataToFile
 
 heroesStats = {2: {}, 3: {}, 4: {}, 5: {}}
 
