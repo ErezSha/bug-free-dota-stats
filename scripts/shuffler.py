@@ -7,9 +7,9 @@ def getGameData(fileName):
     getDataFrom = './data/'+fileName
     return json.load(open(getDataFrom))
 
-def writeDataToFile(fileName, data, pretty=False):
+def writeDataToFile(fileName, data, pretty=False, mode="w+"):
     writeTo = './data/'+fileName
-    with open(writeTo, 'w+') as outfile:
+    with open(writeTo, mode) as outfile:
         if pretty:
             data = json.dumps(data, sort_keys=True, indent=4)
         json.dump(data, outfile)
@@ -36,9 +36,6 @@ def shuffle(dataFile, testTo, validationTo, valSize):
 def countGames(fileName):
     games = getGameData(fileName)
     print len(games)
-
-#countGames('validationGames.json')
-#shuffle()
 
 parser = argparse.ArgumentParser(description='Shuffle test and validation games', add_help=False)
 parser.add_argument('--count', dest='count', help='Count games in a file')
