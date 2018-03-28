@@ -168,7 +168,7 @@ def run(train_file, test_file):
 	entroy = tf.losses.softmax_cross_entropy(onehot_labels=one_hot, logits=model_out)
 	loss = tf.reduce_mean(entroy)
 
-	optimizer = tf.train.GradientDescentOptimizer(0.001)
+	optimizer = tf.train.GradientDescentOptimizer(0.01)
 	train = optimizer.minimize(loss)
 	init = tf.global_variables_initializer()
 
@@ -177,7 +177,7 @@ def run(train_file, test_file):
 		sess.run(train_ds_it.initializer)
 
 		#train loop
-		for i in range(0):#range(int(samples/batch_size)):
+		for i in range(200000):
 
 			feed = sess.run(train_ds_n_e)
 
@@ -203,7 +203,7 @@ def run(train_file, test_file):
 
 			a, _b = sess.run([output, prob], feed_dict=feed_dict)
 			for i in range(0,batch_size):
-				if _b[i,a[i]] > 0.90:
+				if _b[i,a[i]] > 0.95:
 					decision += 1
 					if a[i] == feed['y'][i,0]:
 						accuracy += 1
