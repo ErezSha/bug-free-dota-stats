@@ -90,10 +90,6 @@ def createBogusData(poolSize=20, dataSize=100, desiredWinPer=0.9, writeTo="bogus
     bogusData = { "winnerPick": winnerPick, "loserPick": loserPick, "games": games }
     writeDataToFile(writeTo, data=bogusData, mode='w')
 
-def countGamesInFile(fileName):
-    games = getGameData(fileName)['games']
-    print len(games.keys())
-
 def main(args):
     if args.create != None:
         createBogusData(poolSize=args.poolSize, dataSize=args.dataSize, 
@@ -103,7 +99,6 @@ def main(args):
 
 parser = argparse.ArgumentParser(description='Create bogus data games', add_help=False)
 parser.add_argument('--create', dest='create', help='create new data to this file', type=str)
-parser.add_argument('--cGames', dest='countFile', help='get number of games on a file', type=str)
 parser.add_argument('-dataSize', dest='dataSize', help='number of games to create', type=int, default=10000)
 parser.add_argument('-heroPoolSize', dest='poolSize', help='number of hero ids to use as base hero pool', type=int, default=20)
 parser.add_argument('-desWinPer', dest='desWinPer', help='desired win percentege of winning hero', type=float, default=0.9)
