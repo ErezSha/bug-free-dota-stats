@@ -94,8 +94,7 @@ def main(args):
     if args.create != None:
         createBogusData(poolSize=args.poolSize, dataSize=args.dataSize, 
                         desiredWinPer=args.desWinPer, writeTo=args.create)
-    if args.countFile != None:
-        countGamesInFile(args.countFile)
+    
 
 parser = argparse.ArgumentParser(description='Create bogus data games', add_help=False)
 parser.add_argument('--create', dest='create', help='create new data to this file', type=str)
