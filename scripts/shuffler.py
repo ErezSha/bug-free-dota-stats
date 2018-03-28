@@ -21,7 +21,8 @@ def getDataFromGames(games, ids):
     return data
 
 def shuffle(dataFile, testTo, validationTo, valSize):
-    games = getGameData(dataFile)
+    gameFile = getGameData(dataFile)
+    games = gameFile["games"] if gameFile.has_key("games") else gameFile
     gameIds = games.keys()
     
     validationIds = sample(gameIds, valSize)
@@ -35,7 +36,8 @@ def shuffle(dataFile, testTo, validationTo, valSize):
 
 def countGames(fileName):
     games = getGameData(fileName)
-    print len(games)
+    _games = games['games'].keys() if games.has_key('games') else games.keys()
+    print len(_games)
 
 parser = argparse.ArgumentParser(description='Shuffle test and validation games', add_help=False)
 parser.add_argument('--count', dest='count', help='Count games in a file')
